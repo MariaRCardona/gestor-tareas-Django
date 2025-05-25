@@ -1,0 +1,86 @@
+{% extends 'tasks/base.html' %}
+{% load custom_filters %}
+
+{% block title %}{{ form.instance.id|yesno:"Editar,Nueva" }} Tarea{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="content">
+        <div class="content-header">
+            <h2 class="content-title">{{ form.instance.id|yesno:"Editar,Nueva" }} Tarea</h2>
+            <a href="{% if form.instance.id %}{% url 'tasks:tarea_detail' form.instance.id %}{% else %}{% url 'tasks:index' %}{% endif %}" class="btn btn-primary">
+                <i class="fas fa-arrow-left"></i> Volver
+            </a>
+        </div>
+        
+        <form method="POST" id="taskForm">
+            {% csrf_token %}
+            
+            <div class="form-group">
+                <label for="{{ form.titulo.id_for_label }}" class="form-label">Título *</label>
+                {{ form.titulo }}
+                {% if form.titulo.errors %}
+                <div class="error-message">{{ form.titulo.errors }}</div>
+                {% endif %}
+            </div>
+            
+            <div class="form-group">
+                <label for="{{ form.descripcion.id_for_label }}" class="form-label">Descripción</label>
+                {{ form.descripcion }}
+                {% if form.descripcion.errors %}
+                <div class="error-message">{{ form.descripcion.errors }}</div>
+                {% endif %}
+            </div>
+            
+            <div class="form-group">
+                <label for="{{ form.categoria.id_for_label }}" class="form-label">Categoría *</label>
+                {{ form.categoria }}
+                {% if form.categoria.errors %}
+                <div class="error-message">{{ form.categoria.errors }}</div>
+                {% endif %}
+            </div>
+            
+            <div class="form-group">
+                <label for="{{ form.prioridad.id_for_label }}" class="form-label">Prioridad</label>
+                {{ form.prioridad }}
+                {% if form.prioridad.errors %}
+                <div class="error-message">{{ form.prioridad.errors }}</div>
+                {% endif %}
+            </div>
+            
+            <div class="form-group">
+                <label for="{{ form.fecha_vencimiento.id_for_label }}" class="form-label">Fecha de vencimiento</label>
+                {{ form.fecha_vencimiento }}
+                {% if form.fecha_vencimiento.errors %}
+                <div class="error-message">{{ form.fecha_vencimiento.errors }}</div>
+                {% endif %}
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">Etiquetas</label>
+                <div class="form-check-group">
+                    {% for etiqueta in form.etiquetas %}
+                    <div class="form-check">
+                        {{ etiqueta.tag }}
+                        <label for="{{ etiqueta.id_for_label }}" class="form-check-label">
+                             <span class="task-tag" style="background-color: {{ etiqueta.choice_label.instance.color|default:'#cccccc' }}">
+                                 {{ etiqueta.choice_label }}
+                                </span>
+                        </label>
+
+                    </div>
+                    {% endfor %}
+                </div>
+                {% if form.etiquetas.errors %}
+                <div class="error-message">{{ form.etiquetas.errors }}</div>
+                {% endif %}
+            </div>
+            
+            <div class="form-actions">
+                <a href="{% if form.instance.id %}{% url 'tasks:tarea_detail' form.instance.id %}{% else %}{% url 'tasks:index' %}{% endif %}" class="btn btn-danger">Cancelar</a>
+                <button type="submit" class="btn btn-primary">Guardar</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

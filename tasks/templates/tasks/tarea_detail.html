@@ -1,0 +1,102 @@
+{% extends 'tasks/base.html' %}
+
+{% block title %}Detalle de Tarea - {{ tarea.titulo }}{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="content">
+        <div class="content-header">
+            <h2 class="content-title">Detalle de Tarea</h2>
+            <div>
+                <a href="{% url 'tasks:index' %}" class="btn btn-primary">
+                    <i class="fas fa-arrow-left"></i> Volver
+                </a>
+                <a href="{% url 'tasks:tarea_update' tarea.id %}" class="btn btn-success">
+                    <i class="fas fa-edit"></i> Editar
+                </a>
+            </div>
+        </div>
+        
+        <div class="task-detail">
+            <div class="task-header" style="border-left: 4px solid {{ tarea.categoria.color }}; padding-left: 15px;">
+                <h1 class="task-title {% if tarea.completada %}completed{% endif %}">{{ tarea.titulo }}</h1>
+                <div class="task-meta">
+                    <span class="task-category" style="color: {{ tarea.categoria.color }}">
+                        <i class="fas fa-folder"></i> {{ tarea.categoria.nombre }}
+                    </span>
+                    
+                    <span class="task-status">
+                        {% if tarea.completada %}
+                        <span class="priority priority-low">Completada</span>
+                        {% else %}
+                        <span class="priority priority-medium">Pendiente</span>
+                        {% endif %}
+                    </span>
+                    
+                    <span class="task-priority">
+                        {% if tarea.prioridad == 1 %}
+                        <span class="priority priority-low">Prioridad Baja</span>
+                        {% elif tarea.prioridad == 2 %}
+                        <span class="priority priority-medium">Prioridad Media</span>
+                        {% else %}
+                        <span class="priority priority-high">Prioridad Alta</span>
+                        {% endif %}
+                    </span>
+                </div>
+                
+                {% if tarea.etiquetas.all %}
+                <div class="task-tags mt-2">
+                    {% for etiqueta in tarea.etiquetas.all %}
+                    <span class="task-tag" style="background-color: {{ etiqueta.color }}">
+                        {{ etiqueta.nombre }}
+                    </span>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </div>
+            
+            <div class="task-dates mt-3">
+                <div>
+                    <strong><i class="far fa-calendar-plus"></i> Fecha de creación:</strong>
+                    {{ tarea.fecha_creacion|date:"d/m/Y H:i" }}
+                </div>
+                
+                {% if tarea.fecha_vencimiento %}
+                <div class="mt-1">
+                    <strong><i class="far fa-calendar-alt"></i> Fecha de vencimiento:</strong>
+                    {{ tarea.fecha_vencimiento|date:"d/m/Y" }}
+                </div>
+                {% endif %}
+            </div>
+            
+            <div class="task-description mt-3">
+                <h3><i class="fas fa-align-left"></i> Descripción</h3>
+                <div class="description-content mt-2">
+                    {% if tarea.descripcion %}
+                    <p>{{ tarea.descripcion }}</p>
+                    {% else %}
+                    <p class="text-muted">Sin descripción</p>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <div class="task-actions mt-3">
+                <form action="{% url 'tasks:tarea_toggle_complete' tarea.id %}" method="POST" class="d-inline">
+                    {% csrf_token %}
+                    <button type="submit" class="btn {% if tarea.completada %}btn-warning{% else %}btn-success{% endif %}">
+                        {% if tarea.completada %}
+                        <i class="fas fa-times"></i> Marcar como pendiente
+                        {% else %}
+                        <i class="fas fa-check"></i> Marcar como completada
+                        {% endif %}
+                    </button>
+                </form>
+                
+                <a href="{% url 'tasks:tarea_delete' tarea.id %}" class="btn btn-danger">
+                    <i class="fas fa-trash"></i> Eliminar
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

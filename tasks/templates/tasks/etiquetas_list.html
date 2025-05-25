@@ -1,0 +1,52 @@
+{% extends 'tasks/base.html' %}
+
+{% block title %}Etiquetas{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="content">
+        <div class="content-header">
+            <h2 class="content-title">Etiquetas</h2>
+            <a href="{% url 'tasks:etiqueta_create' %}" class="btn btn-primary">
+                <i class="fas fa-plus"></i> Nueva etiqueta
+            </a>
+        </div>
+        
+        {% if etiquetas %}
+        <div class="tags-container">
+            {% for etiqueta in etiquetas %}
+            <div class="tag-card" style="border-left: 4px solid {{ etiqueta.color }}">
+                <div class="tag-card-header">
+                    <h3 class="tag-card-title">
+                        <span class="task-tag" style="background-color: {{ etiqueta.color }}">
+                            {{ etiqueta.nombre }}
+                        </span>
+                    </h3>
+                    <span class="tag-count">{{ etiqueta.tareas.count }} tareas</span>
+                </div>
+                <div class="tag-card-footer">
+                    <a href="{% url 'tasks:etiqueta_update' etiqueta.id %}" class="btn btn-primary btn-sm">
+                        <i class="fas fa-edit"></i> Editar
+                    </a>
+                    <a href="{% url 'tasks:etiqueta_delete' etiqueta.id %}" class="btn btn-danger btn-sm">
+                        <i class="fas fa-trash"></i> Eliminar
+                    </a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="empty-state">
+            <div class="empty-state-icon">
+                <i class="fas fa-tags"></i>
+            </div>
+            <h3 class="empty-state-title">No hay etiquetas</h3>
+            <p class="empty-state-text">Comienza creando una nueva etiqueta</p>
+            <a href="{% url 'tasks:etiqueta_create' %}" class="btn btn-primary">
+                <i class="fas fa-plus"></i> Nueva etiqueta
+            </a>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

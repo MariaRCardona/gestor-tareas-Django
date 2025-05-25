@@ -1,0 +1,31 @@
+{% extends 'tasks/base.html' %}
+
+{% block title %}Confirmar eliminación de tarea{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="content">
+        <div class="content-header">
+            <h2 class="content-title">Eliminar Tarea</h2>
+            <a href="{% url 'tasks:tarea_detail' tarea.id %}" class="btn btn-primary">
+                <i class="fas fa-arrow-left"></i> Volver
+            </a>
+        </div>
+        
+        <div class="task-detail">
+            <div class="task-header">
+                <h3>¿Estás seguro de que deseas eliminar la tarea "{{ tarea.titulo }}"?</h3>
+                <p class="mt-2">Esta acción no se puede deshacer.</p>
+            </div>
+            
+            <form method="POST" class="mt-3">
+                {% csrf_token %}
+                <div class="form-actions">
+                    <a href="{% url 'tasks:tarea_detail' tarea.id %}" class="btn btn-primary">Cancelar</a>
+                    <button type="submit" class="btn btn-danger">Eliminar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

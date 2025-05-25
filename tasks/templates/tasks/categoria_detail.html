@@ -1,0 +1,97 @@
+{% extends 'tasks/base.html' %}
+
+{% block title %}{{ categoria.nombre }} - Gestor de Tareas{% endblock %}
+
+{% block content %}
+<div class="dashboard">
+    <div class="sidebar">
+        <div class="sidebar-title">
+            <span><i class="fas fa-folder"></i> Categorías</span>
+            <a href="{% url 'tasks:categoria_create' %}" class="btn btn-primary btn-sm" title="Nueva categoría">
+                <i class="fas fa-plus"></i>
+            </a>
+        </div>
+        <ul class="category-list">
+            <li class="category-item" data-id="all">
+                <div class="category-name">
+                    <i class="fas fa-list"></i> Todas las tareas
+                </div>
+                <span class="category-count">{{ tareas.count }}</span>
+            </li>
+            {% for cat in categorias %}
+            <li class="category-item {% if cat.id == categoria.id %}active{% endif %}" data-id="{{ cat.id }}" style="border-left: 4px solid {{ cat.color }}">
+                <div class="category-name">
+                    <i class="fas fa-folder"></i> {{ cat.nombre }}
+                </div>
+                <span class="category-count">{{ cat.tareas.count }}</span>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+    
+    <div class="content">
+        <div class="content-header">
+            <h2 class="content-title">{{ categoria.nombre }}</h2>
+            <a href="{% url 'tasks:tarea_create' %}" class="btn btn-primary">
+                <i class="fas fa-plus"></i> Nueva tarea
+            </a>
+        </div>
+        
+        {% if tareas %}
+        <ul class="task-list">
+            {% for tarea in tareas %}
+            <li class="task-item {% if tarea.completada %}completed{% endif %}" data-id="{{ tarea.id }}">
+                <div class="task-content">
+                    <input type="checkbox" class="task-checkbox" {% if tarea.completada %}checked{% endif %}>
+                    <div class="task-info">
+                        <h3 class="task-title">{{ tarea.titulo }}</h3>
+                        <div class="task-meta">
+                            {% if tarea.fecha_vencimiento %}
+                            <span class="task-date">
+                                <i class="far fa-calendar-alt"></i> {{ tarea.fecha_vencimiento|date:"d/m/Y" }}
+                            </span>
+                            {% endif %}
+                            <span class="task-category" style="color: {{ tarea.categoria.color }}">
+                                <i class="fas fa-folder"></i> {{ tarea.categoria.nombre }}
+                            </span>
+                        </div>
+                        {% if tarea.etiquetas.all %}
+                        <div class="task-tags">
+                            {% for etiqueta in tarea.etiquetas.all %}
+                            <span class="task-tag" style="background-color: {{ etiqueta.color }}">
+                                {{ etiqueta.nombre }}
+                            </span>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="task-actions">
+                    <a href="{% url 'tasks:tarea_detail' tarea.id %}" class="task-action-btn view" title="Ver detalles">
+                        <i class="fas fa-eye"></i>
+                    </a>
+                    <a href="{% url 'tasks:tarea_update' tarea.id %}" class="task-action-btn edit" title="Editar">
+                        <i class="fas fa-edit"></i>
+                    </a>
+                    <a href="{% url 'tasks:tarea_delete' tarea.id %}" class="task-action-btn delete" title="Eliminar">
+                        <i class="fas fa-trash"></i>
+                    </a>
+                </div>
+            </li>
+            {% endfor %}
+        </ul>
+        {% else %}
+        <div class="empty-state">
+            <div class="empty-state-icon">
+                <i class="fas fa-tasks"></i>
+            </div>
+            <h3 class="empty-state-title">No hay tareas en esta categoría</h3>
+            <p class="empty-state-text">Comienza creando una nueva tarea</p>
+            <a href="{% url 'tasks:tarea_create' %}" class="btn btn-primary">
+                <i class="fas fa-plus"></i> Nueva tarea
+            </a>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

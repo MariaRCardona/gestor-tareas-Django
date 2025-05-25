@@ -1,0 +1,51 @@
+{% extends 'tasks/base.html' %}
+
+{% block title %}Categorías{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="content">
+        <div class="content-header">
+            <h2 class="content-title">Categorías</h2>
+            <a href="{% url 'tasks:categoria_create' %}" class="btn btn-primary">
+                <i class="fas fa-plus"></i> Nueva categoría
+            </a>
+        </div>
+        
+        {% if categorias %}
+        <div class="category-grid">
+            {% for categoria in categorias %}
+            <div class="category-card" style="border-left: 4px solid {{ categoria.color }}">
+                <div class="category-card-header">
+                    <h3 class="category-card-title">{{ categoria.nombre }}</h3>
+                    <span class="category-count">{{ categoria.tareas.count }} tareas</span>
+                </div>
+                <div class="category-card-body">
+                    <p>{{ categoria.descripcion|default:"Sin descripción" }}</p>
+                </div>
+                <div class="category-card-footer">
+                    <a href="{% url 'tasks:categoria_detail' categoria.id %}" class="btn btn-primary">
+                        <i class="fas fa-tasks"></i> Ver tareas
+                    </a>
+                    <a href="{% url 'tasks:categoria_update' categoria.id %}" class="btn btn-success">
+                        <i class="fas fa-edit"></i> Editar
+                    </a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="empty-state">
+            <div class="empty-state-icon">
+                <i class="fas fa-folder-open"></i>
+            </div>
+            <h3 class="empty-state-title">No hay categorías</h3>
+            <p class="empty-state-text">Comienza creando una nueva categoría</p>
+            <a href="{% url 'tasks:categoria_create' %}" class="btn btn-primary">
+                <i class="fas fa-plus"></i> Nueva categoría
+            </a>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
